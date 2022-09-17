@@ -25,7 +25,7 @@ model BossRaidHistory{
 
 model BossRaid{
   id                Int                @id @default(autoincrement())
-  level             Int
+  level             Int                @unique
   canEnter          Boolean            @default(true)
   totalScore        Int
   enteredUserId     Int?               

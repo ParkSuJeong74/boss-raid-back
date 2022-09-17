@@ -1,4 +1,69 @@
-import { Controller } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { BossraidsService } from './bossraids.service';
+import { EndBossraidDto, EnterBossraidDto } from './dto';
 
 @Controller('bossraids')
-export class BossraidsController {}
+export class BossraidsController {
+  constructor(private readonly bossraidsService: BossraidsService) {}
+
+  @HttpCode(200)
+  @Get('state/:id')
+  @ApiOperation({
+    summary: '현재 상태 조회 API',
+    description: '보스레이드 현재 상태를 조회한다.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '현재 상태 조회 성공',
+  })
+  @ApiParam({ name: 'id', required: true, description: '보스 아이디' })
+  async getState(@Param('id') id: number) {
+    return await this.bossraidsService.getState(id);
+  }
+
+  @HttpCode(201)
+  @Post('enter')
+  @ApiOperation({
+    summary: '보스레이드 시작 API',
+    description: '보스레이드를 시작한다.',
+  })
+  @ApiResponse({
+    status: 201,
+    description: '보스레이드 시작 성공',
+  })
+  @ApiBody({ type: EnterBossraidDto })
+  async enterBossraid(@Body() enterBossraidDto: EnterBossraidDto) {
+    return await this.bossraidsService.enterBossraid(enterBossraidDto);
+  }
+
+  @HttpCode(201)
+  @Post('end')
+  @ApiOperation({
+    summary: '보스레이드 종료 API',
+    description: '보스레이드를 종료한다.',
+  })
+  @ApiResponse({
+    status: 201,
+    description: '보스레이드 종료 성공',
+  })
+  @ApiBody({ type: EndBossraidDto })
+  async endrBossraid(@Body() endBossraidDto: EndBossraidDto) {
+    return await this.bossraidsService.endrBossraid(endBossraidDto);
+  }
+
+  @HttpCode(200)
+  @Get('ranking/:level')
+  @ApiOperation({
+    summary: '랭킹 조회 API',
+    description: '보스레이드 랭킹를 조회한다.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '랭킹 조회 성공',
+  })
+  @ApiParam({ name: 'level', required: true, description: '보스 레벨' })
+  async getRanking(@Param('id') level: number) {
+    return await this.bossraidsService.getRanking(level);
+  }
+}
