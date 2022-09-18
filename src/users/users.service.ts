@@ -16,16 +16,21 @@ export class UsersService {
     }
   }
 
-  async getUser(id: number) {
+  async getUser(user_id: number) {
     try {
       const user = await this.prisma.user.findUnique({
-        where: { id },
+        where: { user_id },
         select: {
           BossRaid: {
             select: { totalScore: true },
           },
           BossRaidHistory: {
-            select: { id: true, score: true, enterTime: true, endTime: true },
+            select: {
+              record_id: true,
+              score: true,
+              enterTime: true,
+              endTime: true,
+            },
           },
         },
       });

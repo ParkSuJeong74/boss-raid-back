@@ -2,16 +2,22 @@ import { IsNumber } from 'class-validator';
 
 export class EnterBossraidDto {
   @IsNumber()
-  level: number;
+  boss_id: number;
 
   @IsNumber()
-  userId: number;
+  user_id: number;
 }
 
 export class EndBossraidDto {
   @IsNumber()
+  boss_id: number;
+
+  @IsNumber()
   score: number;
 
   @IsNumber()
-  userId: number;
+  user_id: number;
+
+  @IsNumber()
+  record_id: number;
 }

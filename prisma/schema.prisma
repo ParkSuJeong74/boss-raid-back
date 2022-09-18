@@ -8,26 +8,28 @@ datasource db {
 }
 
 model User{
-  id                Int                @id @default(autoincrement())
+  user_id           Int                @id @default(autoincrement())
   name              String             @db.VarChar(20)
   BossRaidHistory   BossRaidHistory[]
   BossRaid          BossRaid[]       
 }
 
 model BossRaidHistory{
-  id                Int                @id @default(autoincrement())
-  score             Int
-  enterTime         String
-  endTime           String
+  record_id         Int                @id @default(autoincrement())
+  score             Int?
+  enterTime         DateTime           @default(now())
+  endTime           DateTime?
+  clear             Boolean            @default(false)
   user_id           Int
-  User              User               @relation(fields: [user_id], references: [id])
+  User              User               @relation(fields: [user_id], references: [user_id])
 }
 
 model BossRaid{
-  id                Int                @id @default(autoincrement())
+  boss_id           Int                @id @default(autoincrement())
   level             Int                @unique
   canEnter          Boolean            @default(true)
   totalScore        Int
+  limitMSecond      Int
   enteredUserId     Int?               
-  User              User?              @relation(fields: [enteredUserId], references: [id])
+  User              User?              @relation(fields: [enteredUserId], references: [user_id])
 }

@@ -28,7 +28,7 @@ export class UsersController {
   async createUser(@Body() createUserDto: CreateUserDto) {
     const user = await this.usersService.createUser(createUserDto);
     return {
-      userId: user.id,
+      userId: user.user_id,
     };
   }
 

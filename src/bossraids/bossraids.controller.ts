@@ -8,7 +8,7 @@ export class BossraidsController {
   constructor(private readonly bossraidsService: BossraidsService) {}
 
   @HttpCode(200)
-  @Get('state/:id')
+  @Get('state/:boss_id')
   @ApiOperation({
     summary: '현재 상태 조회 API',
     description: '보스레이드 현재 상태를 조회한다.',
@@ -17,9 +17,9 @@ export class BossraidsController {
     status: 200,
     description: '현재 상태 조회 성공',
   })
-  @ApiParam({ name: 'id', required: true, description: '보스 아이디' })
-  async getState(@Param('id') id: number) {
-    return await this.bossraidsService.getState(id);
+  @ApiParam({ name: 'boss_id', required: true, description: '보스 아이디' })
+  async getState(@Param('boss_id') boss_id: number) {
+    return await this.bossraidsService.getState(boss_id);
   }
 
   @HttpCode(201)
@@ -62,8 +62,9 @@ export class BossraidsController {
     status: 200,
     description: '랭킹 조회 성공',
   })
-  @ApiParam({ name: 'level', required: true, description: '보스 레벨' })
-  async getRanking(@Param('id') level: number) {
-    return await this.bossraidsService.getRanking(level);
+  // @ApiParam({ name: 'level', required: true, description: '보스 레벨' })
+  async getRanking() {
+    //@Param('id') level: number
+    return await this.bossraidsService.getRanking();
   }
 }
