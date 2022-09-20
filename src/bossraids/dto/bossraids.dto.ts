@@ -13,7 +13,7 @@ export class EndBossraidDto {
   boss_id: number;
 
   @IsNumber()
-  score: number;
+  level: number;
 
   @IsNumber()
   user_id: number;

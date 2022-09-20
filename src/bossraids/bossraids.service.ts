@@ -1,20 +1,25 @@
+import { HttpService } from '@nestjs/axios';
 import {
   ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { lastValueFrom } from 'rxjs';
 import { PrismaService } from '../prisma/prisma.service';
 import { EndBossraidDto, EnterBossraidDto } from './dto';
 
 @Injectable()
 export class BossraidsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly httpService: HttpService,
+  ) {}
 
   async getState(boss_id: number) {
     try {
       const boss = await this.prisma.bossRaid.findUnique({
         where: { boss_id },
-        select: { canEnter: true, enteredUserId: true, limitMSecond: true },
+        select: { canEnter: true, enteredUserId: true },
       });
       return boss;
     } catch (err) {
@@ -55,8 +60,11 @@ export class BossraidsService {
     }
   }
 
-  async endrBossraid(endBossraidDto: EndBossraidDto) {
-    const { score, boss_id, user_id, record_id } = endBossraidDto;
+  async endBossraid(endBossraidDto: EndBossraidDto) {
+    const { level, boss_id, user_id, record_id } = endBossraidDto;
+    const data = await this.getStaticData();
+    const limitSecond = data.bossRaidLimitSeconds * 1000;
+    const score = data.bossRaids[0].levels[level].score;
 
     const boss = await this.getState(boss_id);
     if (boss.enteredUserId !== user_id) {
@@ -69,8 +77,7 @@ export class BossraidsService {
     const bossraidHistory = await this.getBossRaidHistory(record_id);
 
     const raidTimeout =
-      currentTime.getTime() - bossraidHistory.enterTime.getTime() >
-      boss.limitMSecond;
+      currentTime.getTime() - bossraidHistory.enterTime.getTime() > limitSecond;
 
     if (raidTimeout) {
       throw new ForbiddenException('제한시간을 초과한 레이드입니다.');
@@ -95,5 +102,19 @@ export class BossraidsService {
 
   async getRanking() {
     // redis에서 받아오기
+  }
+
+  async getStaticData() {
+    try {
+      const res = await this.httpService.get(
+        `https://dmpilf5svl7rv.cloudfront.net/assignment/backend/bossRaidData.json`,
+      );
+      const data = (await lastValueFrom(res)).data;
+      return data;
+    } catch (err) {
+      throw new NotFoundException(
+        '보스레이드 정적 데이터를 불러오지 못했습니다.',
+      );
+    }
   }
 }

@@ -1,10 +1,11 @@
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { BossraidsModule } from './bossraids/bossraids.module';
 import { validation } from './commons/utils';
 import { PrismaModule } from './prisma/prisma.module';
-import { UsersModule } from './users/users.module';
-import { BossraidsModule } from './bossraids/bossraids.module';
 import { RedisModule } from './redis/redis.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { RedisModule } from './redis/redis.module';
     UsersModule,
     BossraidsModule,
     RedisModule,
+    HttpModule,
   ],
 })
 export class AppModule {}

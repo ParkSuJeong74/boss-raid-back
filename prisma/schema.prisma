@@ -29,7 +29,6 @@ model BossRaid{
   level             Int                @unique
   canEnter          Boolean            @default(true)
   totalScore        Int
-  limitMSecond      Int
   enteredUserId     Int?               
   User              User?              @relation(fields: [enteredUserId], references: [user_id])
 }

@@ -49,7 +49,7 @@ export class BossraidsController {
   })
   @ApiBody({ type: EndBossraidDto })
   async endrBossraid(@Body() endBossraidDto: EndBossraidDto) {
-    return await this.bossraidsService.endrBossraid(endBossraidDto);
+    return await this.bossraidsService.endBossraid(endBossraidDto);
   }
 
   @HttpCode(200)
