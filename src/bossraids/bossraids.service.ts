@@ -41,6 +41,8 @@ export class BossraidsService {
 
   async enterBossraid(enterBossraidDto: EnterBossraidDto) {
     const { boss_id, user_id } = enterBossraidDto;
+    await this.redisService.setRank(user_id.toString(), 0);
+
     try {
       const [boss, bossRaidHistory] = await this.prisma.$transaction([
         this.prisma.bossRaid.update({
@@ -54,10 +56,7 @@ export class BossraidsService {
         }),
       ]);
 
-      await this.redisService.setRank(user_id.toString(), 0);
-
       const result = { ...boss, ...bossRaidHistory };
-
       return result;
     } catch (err) {
       throw new NotFoundException('보스레이드를 시작하지 못했습니다.');

@@ -13,7 +13,9 @@ export class RedisService {
   async setRank(key: string, value: number): Promise<boolean> {
     try {
       const originalValue: number = await this.cacheManager.get(key);
-      await this.cacheManager.set(key, originalValue + value);
+      const newValue = value + originalValue;
+      await this.cacheManager.set(key, newValue);
+
       return true;
     } catch (error) {
       throw new ForbiddenException('Failed Caching');
@@ -23,11 +25,19 @@ export class RedisService {
   async getRankings() {
     try {
       const keys = await this.cacheManager.store.keys();
-      const allRanking = {};
+
+      const arr = [];
       for (const key of keys) {
-        allRanking[key] = await this.cacheManager.get(key);
+        const json = {};
+        json['user'] = key;
+        json['score'] = await this.cacheManager.get(key);
+        arr.push(json);
       }
-      return allRanking;
+
+      arr.sort((a, b) => {
+        return b.score - a.score;
+      });
+      return arr;
     } catch (error) {
       throw new ForbiddenException('Failed Caching');
     }
