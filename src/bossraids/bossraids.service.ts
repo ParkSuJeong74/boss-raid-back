@@ -67,10 +67,12 @@ export class BossraidsService {
 
     const currentTime = new Date(Date.now());
     const bossraidHistory = await this.getBossRaidHistory(record_id);
-    if (
+
+    const raidTimeout =
       currentTime.getTime() - bossraidHistory.enterTime.getTime() >
-      boss.limitMSecond
-    ) {
+      boss.limitMSecond;
+
+    if (raidTimeout) {
       throw new ForbiddenException('제한시간을 초과한 레이드입니다.');
     }
 
