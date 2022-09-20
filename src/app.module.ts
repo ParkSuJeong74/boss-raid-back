@@ -4,6 +4,7 @@ import { validation } from './commons/utils';
 import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './users/users.module';
 import { BossraidsModule } from './bossraids/bossraids.module';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { BossraidsModule } from './bossraids/bossraids.module';
     PrismaModule,
     UsersModule,
     BossraidsModule,
+    RedisModule,
   ],
 })
 export class AppModule {}
