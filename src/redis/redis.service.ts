@@ -10,19 +10,24 @@ import { Cache } from 'cache-manager';
 export class RedisService {
   constructor(@Inject(CACHE_MANAGER) private readonly cacheManager: Cache) {}
 
-  async setRank(key: string, value: string): Promise<boolean> {
+  async setRank(key: string, value: number): Promise<boolean> {
     try {
-      await this.cacheManager.set(key, value);
+      const originalValue: number = await this.cacheManager.get(key);
+      await this.cacheManager.set(key, originalValue + value);
       return true;
     } catch (error) {
       throw new ForbiddenException('Failed Caching');
     }
   }
 
-  async getRank(key: string): Promise<string> {
+  async getRankings() {
     try {
-      const value: string = (await this.cacheManager.get(key)) as string;
-      return value;
+      const keys = await this.cacheManager.store.keys();
+      const allRanking = {};
+      for (const key of keys) {
+        allRanking[key] = await this.cacheManager.get(key);
+      }
+      return allRanking;
     } catch (error) {
       throw new ForbiddenException('Failed Caching');
     }

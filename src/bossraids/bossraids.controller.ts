@@ -53,7 +53,7 @@ export class BossraidsController {
   }
 
   @HttpCode(200)
-  @Get('ranking/:level')
+  @Get('rankings')
   @ApiOperation({
     summary: '랭킹 조회 API',
     description: '보스레이드 랭킹를 조회한다.',
@@ -62,9 +62,7 @@ export class BossraidsController {
     status: 200,
     description: '랭킹 조회 성공',
   })
-  // @ApiParam({ name: 'level', required: true, description: '보스 레벨' })
   async getRanking() {
-    //@Param('id') level: number
     return await this.bossraidsService.getRanking();
   }
 }

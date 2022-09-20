@@ -21,9 +21,6 @@ export class UsersService {
       const user = await this.prisma.user.findUnique({
         where: { user_id },
         select: {
-          BossRaid: {
-            select: { totalScore: true },
-          },
           BossRaidHistory: {
             select: {
               record_id: true,

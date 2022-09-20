@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
 import { PrismaService } from '../prisma/prisma.service';
+import { RedisService } from '../redis/redis.service';
 import { EndBossraidDto, EnterBossraidDto } from './dto';
 
 @Injectable()
@@ -13,6 +14,7 @@ export class BossraidsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly httpService: HttpService,
+    private readonly redisService: RedisService,
   ) {}
 
   async getState(boss_id: number) {
@@ -44,13 +46,15 @@ export class BossraidsService {
         this.prisma.bossRaid.update({
           where: { boss_id },
           data: { enteredUserId: user_id, canEnter: false },
-          select: { level: true, totalScore: true },
+          select: { level: true },
         }),
         this.prisma.bossRaidHistory.create({
           data: { user_id },
           select: { record_id: true },
         }),
       ]);
+
+      await this.redisService.setRank(user_id.toString(), 0);
 
       const result = { ...boss, ...bossRaidHistory };
 
@@ -94,14 +98,15 @@ export class BossraidsService {
           data: { canEnter: true, enteredUserId: null },
         }),
       ]);
-      // redis에 랭킹
+
+      await this.redisService.setRank(user_id.toString(), score);
     } catch (err) {
       throw new NotFoundException('보스레이드를 종료하지 못했습니다.');
     }
   }
 
   async getRanking() {
-    // redis에서 받아오기
+    return await this.redisService.getRankings();
   }
 
   async getStaticData() {
