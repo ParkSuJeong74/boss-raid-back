@@ -42,4 +42,12 @@ export class RedisService {
       throw new ForbiddenException('Failed Caching');
     }
   }
+
+  async getScore(user_id: string) {
+    try {
+      return await this.cacheManager.get(user_id);
+    } catch (error) {
+      throw new ForbiddenException('Failed Caching');
+    }
+  }
 }

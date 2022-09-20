@@ -1,10 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { RedisService } from '../redis/redis.service';
 import { CreateUserDto } from './dto';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly redisService: RedisService,
+  ) {}
 
   async createUser(createUserDto: CreateUserDto) {
     const { name } = createUserDto;
@@ -31,7 +35,9 @@ export class UsersService {
           },
         },
       });
-      return user;
+      const score = await this.redisService.getScore(user_id.toString());
+      const result = { ...user, score };
+      return result;
     } catch (err) {
       throw new NotFoundException('유저를 조회하지 못했습니다.');
     }
