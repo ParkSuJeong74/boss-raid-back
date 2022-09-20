@@ -1,8 +1,15 @@
 import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { BossraidsService } from './bossraids.service';
 import { EndBossraidDto, EnterBossraidDto } from './dto';
 
+@ApiTags('Bossraids API')
 @Controller('bossraids')
 export class BossraidsController {
   constructor(private readonly bossraidsService: BossraidsService) {}
