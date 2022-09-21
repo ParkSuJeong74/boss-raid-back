@@ -6,7 +6,11 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { CreateUserDto } from './dto';
+import {
+  CreateUserDto,
+  CreateUserResponseDto,
+  getUserResponseDto,
+} from './dto';
 import { UsersService } from './users.service';
 
 @ApiTags('Users API')
@@ -23,9 +27,12 @@ export class UsersController {
   @ApiResponse({
     status: 201,
     description: '유저 생성 성공',
+    type: CreateUserResponseDto,
   })
   @ApiBody({ type: CreateUserDto })
-  async createUser(@Body() createUserDto: CreateUserDto) {
+  async createUser(
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<CreateUserResponseDto> {
     const user = await this.usersService.createUser(createUserDto);
     return {
       userId: user.user_id,
@@ -41,9 +48,10 @@ export class UsersController {
   @ApiResponse({
     status: 200,
     description: '유저 조회 성공',
+    type: getUserResponseDto,
   })
   @ApiParam({ name: 'id', required: true, description: '유저 아이디' })
-  async getUser(@Param('id') id: number) {
+  async getUser(@Param('id') id: number): Promise<getUserResponseDto> {
     return await this.usersService.getUser(id);
   }
 }

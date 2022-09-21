@@ -43,7 +43,8 @@ export class RedisService {
 
   async getScore(user_id: string) {
     try {
-      return await this.cacheManager.get(user_id);
+      const score: number = await this.cacheManager.get(user_id);
+      return score;
     } catch (error) {
       throw new ForbiddenException('Failed Caching');
     }

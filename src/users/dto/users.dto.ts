@@ -1,12 +1,20 @@
-import { IsString } from 'class-validator';
+import { IsArray, IsNumber, IsString } from 'class-validator';
 
 export class CreateUserDto {
   @IsString()
   name: string;
 }
 
+export class CreateUserResponseDto {
+  @IsNumber()
+  userId: number;
+}
+
 export class getUserResponseDto {
-  score: unknown;
+  @IsNumber()
+  score: number;
+
+  @IsArray()
   BossRaidHistory: {
     record_id: number;
     score: number;
