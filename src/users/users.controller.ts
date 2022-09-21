@@ -44,7 +44,6 @@ export class UsersController {
   })
   @ApiParam({ name: 'id', required: true, description: '유저 아이디' })
   async getUser(@Param('id') id: number) {
-    const user = await this.usersService.getUser(id);
-    return { user };
+    return await this.usersService.getUser(id);
   }
 }

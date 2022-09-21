@@ -67,7 +67,7 @@ export class BossraidsService {
     const { level, boss_id, user_id, record_id } = endBossraidDto;
     const data = await this.getStaticData();
     const limitSecond = data.bossRaidLimitSeconds * 1000;
-    const score = data.bossRaids[0].levels[level].score;
+    const score: number = data.bossRaids[0].levels[level].score;
 
     const boss = await this.getState(boss_id);
     if (boss.enteredUserId !== user_id) {
@@ -99,13 +99,15 @@ export class BossraidsService {
       ]);
 
       await this.redisService.setRank(user_id.toString(), score);
+      return { level, score };
     } catch (err) {
       throw new NotFoundException('보스레이드를 종료하지 못했습니다.');
     }
   }
 
   async getRanking() {
-    return await this.redisService.getRankings();
+    const ids = await this.prisma.user.findMany({ select: { user_id: true } });
+    return await this.redisService.getRankings(ids);
   }
 
   async getStaticData() {

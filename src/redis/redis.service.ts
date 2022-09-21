@@ -22,15 +22,13 @@ export class RedisService {
     }
   }
 
-  async getRankings() {
+  async getRankings(ids): Promise<{ user: number; score: number }[]> {
     try {
-      const keys = await this.cacheManager.store.keys();
-
       const arr = [];
-      for (const key of keys) {
+      for (const key of ids) {
         const json = {};
-        json['user'] = key;
-        json['score'] = await this.cacheManager.get(key);
+        json['user'] = key.user_id;
+        json['score'] = await this.cacheManager.get(key.user_id.toString());
         arr.push(json);
       }
 
